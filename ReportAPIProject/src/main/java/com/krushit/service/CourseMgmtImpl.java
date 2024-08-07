@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -106,14 +109,31 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 
 	@Override
 	public void generatePdfReport(SearchInputs inputs, HttpServletResponse res) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void generateExcelReport(SearchInputs inputs, HttpServletResponse res) {
-		// TODO Auto-generated method stub
+		//get search results
+		List<SearchResults> list = showAllResultsByFilters(inputs);
 
+		//create work book
+		HSSFWorkbook workBook = new HSSFWorkbook();
+		//create sheet
+		HSSFSheet sheet1 = workBook.createSheet("CourseDetails");
+		//create row
+		HSSFRow headerRow = sheet1.createRow(0);
+		headerRow.createCell(0).setCellValue("Course ID");
+		headerRow.createCell(1).setCellValue("Course Name");
+		headerRow.createCell(2).setCellValue("Faculty Name");
+		headerRow.createCell(3).setCellValue("Course Category");
+		headerRow.createCell(4).setCellValue("Location");
+		headerRow.createCell(5).setCellValue("Fee");
+		headerRow.createCell(6).setCellValue("Admin Name");
+		headerRow.createCell(7).setCellValue("Admin Contact");
+		headerRow.createCell(8).setCellValue("Training Mode");
+		headerRow.createCell(9).setCellValue("Start Date");
+		headerRow.createCell(10).setCellValue("Course Status");
 	}
 
 }
