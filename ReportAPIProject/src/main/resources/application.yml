@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ReportAPIProject
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///krushit40db
+    username: root
+    password: krushit
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.mysql.dialect.MySQL8Dialect 
+
+server:
+  port: 4040
+
+report:
+  messages:
+    save-success: Travel plan is registered with id value
+    save-failure: Oops..!! Something went wrong
+    find-by-id-failure: Travel Plan is found
+    update-success: Travel Plan is updated
+    update-failure: Travel Plan is not found for updation
+    delete-success: Travel Plan is deleted
+    delete-failure: Travel Plan is not found for deletion
+    status-change-success: Travel Plan Status is changed
+    status-change-failure: Travel Plan is not found for deletion
