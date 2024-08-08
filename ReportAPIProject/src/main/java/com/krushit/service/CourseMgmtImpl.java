@@ -1,5 +1,6 @@
 package com.krushit.service;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +26,11 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfCell;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import jakarta.servlet.ServletOutputStream;
@@ -131,6 +137,61 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		para.setAlignment(Paragraph.ALIGN_CENTER);
 		doc.add(para);
 		
+		PdfPTable table = new PdfPTable(10);
+		table.setWidthPercentage(80);
+		table.setWidths(new float[] {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f});
+		table.setSpacingBefore(2.0f);
+		
+		//prepare heading rows cell in pdf table
+		PdfPCell cell = new PdfPCell();
+		cell.setBackgroundColor(Color.GRAY);
+		cell.setPadding(5);
+		Font cellFont = FontFactory.getFont("Alata");
+		cellFont.setColor(Color.BLACK);
+		cell.setPhrase(new Phrase("Course ID", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Faculty Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Category", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Location", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Fee", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Admin Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Admin Contact", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Training Mode", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Start Date", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Status", cellFont));
+		table.addCell(cell);
+		
+		//add data cells to pdf table
+		list.forEach(result ->{
+			table.addCell(String.valueOf(result.getCourseID()));
+			table.addCell(result.getCourseName());
+			table.addCell(result.getFacultyName());
+			table.addCell(result.getCourseCategory());
+			table.addCell(result.getLocation());
+			table.addCell(String.valueOf(result.getFee()));
+			table.addCell(result.getAdminName());
+			table.addCell(String.valueOf(result.getAdminContact()));
+			table.addCell(result.getTrainindMode());
+			table.addCell(String.valueOf(result.getStartDate()));
+			table.addCell(result.getCourseStatus());
+			
+			table.addCell(cell);
+		});
+		
+		doc.add(table);
+		doc.close();
+		
+;		
 	}
 
 	@Override
