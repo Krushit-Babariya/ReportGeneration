@@ -9,7 +9,7 @@ import com.krushit.entity.CourseDetails;
 
 public interface ICourseDetailsRepository extends JpaRepository<CourseDetails, Integer> {
 	
-	@Query("select distinct(courseCatrgory) from CourseDetails")
+	@Query("select distinct(courseCategory) from CourseDetails")
 	public Set<String> getUniqueCourseCategories(); 
 	
 	@Query("select distinct(facultyName) from CourseDetails")

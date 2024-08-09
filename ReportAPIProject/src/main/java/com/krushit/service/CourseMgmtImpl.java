@@ -13,6 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -36,6 +37,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Service
 public class CourseMgmtImpl implements ICourseMgmtService {
 	@Autowired
 	private ICourseDetailsRepository repo;
@@ -122,7 +124,7 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		// get resultset
 		List<SearchResults> list = showAllResultsByFilters(inputs);
 		// craete document object
-		Document doc = new Document(PageSize.A4);
+		Document doc = new Document(PageSize.A3);
 		//get PdfWriter to to write into document and response object
 		PdfWriter.getInstance(doc, res.getOutputStream());
 		//open document
@@ -137,14 +139,14 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		para.setAlignment(Paragraph.ALIGN_CENTER);
 		doc.add(para);
 		
-		PdfPTable table = new PdfPTable(10);
-		table.setWidthPercentage(80);
-		table.setWidths(new float[] {1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f});
-		table.setSpacingBefore(2.0f);
+		PdfPTable table = new PdfPTable(11);
+		table.setWidthPercentage(100);
+		table.setWidths(new float[] {0.8f,0.8f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f});
+		table.setSpacingBefore(0.5f);
 		
 		//prepare heading rows cell in pdf table
 		PdfPCell cell = new PdfPCell();
-		cell.setBackgroundColor(Color.GRAY);
+		cell.setBorder(5);
 		cell.setPadding(5);
 		Font cellFont = FontFactory.getFont("Alata");
 		cellFont.setColor(Color.BLACK);
@@ -184,15 +186,68 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 			table.addCell(result.getTrainindMode());
 			table.addCell(String.valueOf(result.getStartDate()));
 			table.addCell(result.getCourseStatus());
-			
-			table.addCell(cell);
 		});
 		
 		doc.add(table);
 		doc.close();
-		
-;		
 	}
+	
+	/*
+	 * public void generatePdfReport(SearchInputs inputs, HttpServletResponse res)
+	 * throws DocumentException, IOException { // Get result set List<SearchResults>
+	 * list = showAllResultsByFilters(inputs);
+	 * 
+	 * // Create document object Document doc = new Document(PageSize.A3);
+	 * 
+	 * // Get PdfWriter to write into document and response object
+	 * PdfWriter.getInstance(doc, res.getOutputStream());
+	 * 
+	 * // Open document doc.open();
+	 * 
+	 * // Define font for paragraph Font font = FontFactory.getFont("Helvetica"); //
+	 * Changed to a standard font font.setSize(30);
+	 * 
+	 * // Create paragraph with content Paragraph para = new Paragraph("Report",
+	 * font); para.setAlignment(Paragraph.ALIGN_CENTER); doc.add(para);
+	 * 
+	 * // Create a table with 11 columns PdfPTable table = new PdfPTable(11);
+	 * table.setWidthPercentage(100); table.setWidths(new float[] {0.8f, 0.8f, 1.0f,
+	 * 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f});
+	 * table.setSpacingBefore(5.0f);
+	 * 
+	 * // Define the header font Font headerFont = FontFactory.getFont("Helvetica");
+	 * headerFont.setSize(12); headerFont.setColor(Color.BLACK);
+	 * 
+	 * // Prepare header rows for the PDF table table.addCell(new PdfPCell(new
+	 * Phrase("Course ID", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Course Name", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Faculty Name", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Course Category", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Location", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Fee", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Admin Name", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Admin Contact", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Training Mode", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Start Date", headerFont))); table.addCell(new PdfPCell(new
+	 * Phrase("Course Status", headerFont)));
+	 * 
+	 * // Add data cells to the PDF table list.forEach(result -> {
+	 * table.addCell(String.valueOf(result.getCourseID()));
+	 * table.addCell(result.getCourseName());
+	 * table.addCell(result.getFacultyName());
+	 * table.addCell(result.getCourseCategory());
+	 * table.addCell(result.getLocation());
+	 * table.addCell(String.valueOf(result.getFee()));
+	 * table.addCell(result.getAdminName());
+	 * table.addCell(String.valueOf(result.getAdminContact()));
+	 * table.addCell(result.getTrainindMode());
+	 * table.addCell(String.valueOf(result.getStartDate()));
+	 * table.addCell(result.getCourseStatus()); });
+	 * 
+	 * // Add table to the document doc.add(table);
+	 * 
+	 * // Close the document doc.close(); }
+	 */
 
 	@Override
 	public void generateExcelReport(SearchInputs inputs, HttpServletResponse res) throws Exception {

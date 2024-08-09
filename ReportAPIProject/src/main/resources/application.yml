@@ -10,7 +10,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.mysql.dialect.MySQL8Dialect 
+    database-platform: org.hibernate.dialect.MySQL8Dialect 
 
 server:
   port: 4040
