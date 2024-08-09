@@ -125,26 +125,26 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		List<SearchResults> list = showAllResultsByFilters(inputs);
 		// craete document object
 		Document doc = new Document(PageSize.A3);
-		//get PdfWriter to to write into document and response object
+		// get PdfWriter to to write into document and response object
 		PdfWriter.getInstance(doc, res.getOutputStream());
-		//open document
+		// open document
 		doc.open();
-		
-		//define font for paragraph
+
+		// define font for paragraph
 		Font font = FontFactory.getFont("Alata");
 		font.setSize(30);
-		
-		//create paragraph having content
+
+		// create paragraph having content
 		Paragraph para = new Paragraph("Report", font);
 		para.setAlignment(Paragraph.ALIGN_CENTER);
 		doc.add(para);
-		
+
 		PdfPTable table = new PdfPTable(11);
 		table.setWidthPercentage(100);
-		table.setWidths(new float[] {0.8f,0.8f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f,1.0f});
+		table.setWidths(new float[] { 0.8f, 0.8f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f });
 		table.setSpacingBefore(0.5f);
-		
-		//prepare heading rows cell in pdf table
+
+		// prepare heading rows cell in pdf table
 		PdfPCell cell = new PdfPCell();
 		cell.setBorder(5);
 		cell.setPadding(5);
@@ -172,9 +172,9 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		table.addCell(cell);
 		cell.setPhrase(new Phrase("Course Status", cellFont));
 		table.addCell(cell);
-		
-		//add data cells to pdf table
-		list.forEach(result ->{
+
+		// add data cells to pdf table
+		list.forEach(result -> {
 			table.addCell(String.valueOf(result.getCourseID()));
 			table.addCell(result.getCourseName());
 			table.addCell(result.getFacultyName());
@@ -187,11 +187,11 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 			table.addCell(String.valueOf(result.getStartDate()));
 			table.addCell(result.getCourseStatus());
 		});
-		
+
 		doc.add(table);
 		doc.close();
 	}
-	
+
 	/*
 	 * public void generatePdfReport(SearchInputs inputs, HttpServletResponse res)
 	 * throws DocumentException, IOException { // Get result set List<SearchResults>
@@ -297,6 +297,155 @@ public class CourseMgmtImpl implements ICourseMgmtService {
 		workBook.write(outputStream);
 		outputStream.close();
 		workBook.close();
+	}
+
+	@Override
+	public void generateExcelReportAllData(HttpServletResponse res) throws Exception {
+		// get All the records from Db table
+		List<CourseDetails> list = repo.findAll();
+
+		// copy List<CourseDetails> to List<SearchResults>
+		List<SearchResults> listResults = new ArrayList<>();
+		list.forEach(course -> {
+			SearchResults result = new SearchResults();
+			BeanUtils.copyProperties(course, result);
+			listResults.add(result);
+		});
+
+		// create work book
+		HSSFWorkbook workBook = new HSSFWorkbook();
+		// create sheet
+		HSSFSheet sheet1 = workBook.createSheet("CourseDetails");
+		// create row
+		HSSFRow headerRow = sheet1.createRow(0);
+		headerRow.createCell(0).setCellValue("Course ID");
+		headerRow.createCell(1).setCellValue("Course Name");
+		headerRow.createCell(2).setCellValue("Faculty Name");
+		headerRow.createCell(3).setCellValue("Course Category");
+		headerRow.createCell(4).setCellValue("Location");
+		headerRow.createCell(5).setCellValue("Fee");
+		headerRow.createCell(6).setCellValue("Admin Name");
+		headerRow.createCell(7).setCellValue("Admin Contact");
+		headerRow.createCell(8).setCellValue("Training Mode");
+		headerRow.createCell(9).setCellValue("Start Date");
+		headerRow.createCell(10).setCellValue("Course Status");
+
+		// add data rows
+		int i = 1;
+		for (SearchResults result : listResults) {
+			HSSFRow dataRow = sheet1.createRow(i);
+			dataRow.createCell(0).setCellValue(result.getCourseID());
+			dataRow.createCell(1).setCellValue(result.getCourseName());
+			dataRow.createCell(2).setCellValue(result.getFacultyName());
+			dataRow.createCell(3).setCellValue(result.getCourseCategory());
+			dataRow.createCell(4).setCellValue(result.getLocation());
+			dataRow.createCell(5).setCellValue(result.getFee());
+			dataRow.createCell(6).setCellValue(result.getAdminName());
+			dataRow.createCell(7).setCellValue(result.getAdminContact());
+			dataRow.createCell(8).setCellValue(result.getTrainindMode());
+			dataRow.createCell(9).setCellValue(result.getStartDate());
+			dataRow.createCell(10).setCellValue(result.getCourseStatus());
+			i++;
+		}
+		;
+
+		// get OutputStream pointing to the response object
+		ServletOutputStream outputStream = res.getOutputStream();
+		// write workbook data to response object
+		workBook.write(outputStream);
+		outputStream.close();
+		workBook.close();
+	}
+
+	@Override
+	public void generatePdfReportAllData(HttpServletResponse res) throws Exception {
+		// get All the records from Db table
+		List<CourseDetails> list = repo.findAll();
+
+		// copy List<CourseDetails> to List<SearchResults>
+		List<SearchResults> listResults = new ArrayList<>();
+		list.forEach(course -> {
+			SearchResults result = new SearchResults();
+			BeanUtils.copyProperties(course, result);
+			listResults.add(result);
+		});
+
+		// create Document obj (openPdf)
+		Document document = new Document(PageSize.A3);
+
+		// get PdfWriter to write to the document and response obj
+		PdfWriter.getInstance(document, res.getOutputStream());
+
+		// open the document
+		document.open();
+
+		// Define Font for the Paragraph
+		Font font = FontFactory.getFont(FontFactory.TIMES_BOLD);
+		font.setSize(30);
+
+		// create the paragraph having content and above font style
+		Paragraph para = new Paragraph("Search Report of Courses", font);
+		para.setAlignment(Paragraph.ALIGN_CENTER);
+
+		// add paragraph to document
+		document.add(para);
+
+		// Display search results as the pdf table
+		PdfPTable table = new PdfPTable(11);
+		table.setWidthPercentage(90);
+		table.setWidths(new float[] { 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f });
+		table.setSpacingBefore(2.0f);
+
+		// prepare heading row cells in the pdf table
+		PdfPCell cell = new PdfPCell();
+		cell.setBorder(5);
+		cell.setPadding(5);
+		Font cellFont = FontFactory.getFont("Alata");
+		cellFont.setColor(Color.BLACK);
+		cell.setPhrase(new Phrase("Course ID", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Faculty Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Category", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Location", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Fee", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Admin Name", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Admin Contact", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Training Mode", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Start Date", cellFont));
+		table.addCell(cell);
+		cell.setPhrase(new Phrase("Course Status", cellFont));
+		table.addCell(cell);
+
+		// add data cells to pdf table
+		list.forEach(result -> {
+			table.addCell(String.valueOf(result.getCourseID()));
+			table.addCell(result.getCourseName());
+			table.addCell(result.getFacultyName());
+			table.addCell(result.getCourseCategory());
+			table.addCell(result.getLocation());
+			table.addCell(String.valueOf(result.getFee()));
+			table.addCell(result.getAdminName());
+			table.addCell(String.valueOf(result.getAdminContact()));
+			table.addCell(result.getTrainingMode());
+			table.addCell(String.valueOf(result.getStartDate()));
+			table.addCell(result.getCourseStatus());
+		});
+
+		// add table to document
+		document.add(table);
+
+		// close the document
+		document.close();
+
 	}
 
 }

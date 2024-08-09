@@ -17,4 +17,7 @@ public interface ICourseMgmtService {
 	
 	public void generatePdfReport(SearchInputs inputs, HttpServletResponse res) throws Exception;
 	public void generateExcelReport(SearchInputs inputs, HttpServletResponse res) throws Exception;
+	
+	public void generatePdfReportAllData(HttpServletResponse res) throws Exception;
+	public void generateExcelReportAllData(HttpServletResponse res) throws Exception;
 }
