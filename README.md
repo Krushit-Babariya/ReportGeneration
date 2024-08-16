@@ -78,5 +78,5 @@ The Course Report Generation API is a Spring Boot application designed to manage
   - **Response**: Excel file containing the report.
 
 
-###API Documentation
+### API Documentation
 The API documentation is available at http://localhost:4040/swagger-ui.html.
